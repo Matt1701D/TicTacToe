@@ -1,11 +1,18 @@
 
 class TicTacToe:
 
-    def __init__(self, boardSize):
-        assert(boardSize>0),"Number less than 1"
-        assert(boardSize%2==1),"Number must be odd"
-        self.boardSize = boardSize
-        self.board = Board(boardSize)
+    def __init__(self):
+        success = 0
+        while(not(success)):
+            boardSize = input("Enter size of board (odd number): ")
+            if (not(boardSize.isdigit())):
+                print("Board size not a number")
+            elif int(boardSize) < 3 or int(boardSize) % 2 == 0:   
+                print("Number less than 3 or not odd")
+            else:
+                success = 1
+        self.boardSize = int(boardSize)
+        self.board = Board(self.boardSize)
         self.turn = "X"
         self.play()
 
@@ -26,7 +33,7 @@ class TicTacToe:
     def getMove(self):
         success = 0
         while (not(success)):
-            userInput = input("\n\nEnter coordinates for " + self.turn)
+            userInput = input("Enter coordinates for " + self.turn + ": ")
             coordinates = userInput.split()
 
             if len(coordinates) != 2:
@@ -109,5 +116,5 @@ class Board:
         for row in self.gameBoard:
             print(' '.join([str(s) for s in row]))
 
-myTTT = TicTacToe(3)
+myTTT = TicTacToe()
 
