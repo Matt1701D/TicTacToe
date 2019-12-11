@@ -2,6 +2,15 @@
 class TicTacToe:
 
     def __init__(self):
+        self.boardSize = self.gameSetup()
+        self.numPlayers = self.gameMode()
+        self.difficulty = 0 if self.numPlayers == 1 else self.gameDifficulty()
+        self.board = Board(self.boardSize)
+        
+        self.turn = "X"
+        self.playGame()
+    
+    def gameSetup(self):
         success = 0
         while(not(success)):
             boardSize = input("Enter size of board (odd number): ")
@@ -11,12 +20,37 @@ class TicTacToe:
                 print("Number less than 3 or not odd")
             else:
                 success = 1
-        self.boardSize = int(boardSize)
-        self.board = Board(self.boardSize)
-        self.turn = "X"
-        self.play()
+        return int(boardSize)
 
-    def play(self):
+    def gameDifficulty(self):
+        success = 0
+        while(not(success)):
+            difficulty = input("Enter computer difficulty 1 (Easy), 2 (Medium), 3 (Hard): ")
+            if (not(difficulty.isdigit())):
+                print("Difficulty is not a number")
+            elif int(difficulty) not in [1,2,3]:   
+                print("Difficulty must be 1,2 or 3")
+            else:
+                success = 1
+        return difficulty
+    
+    def gameMode(self):
+        success = 0
+        while(not(success)):
+            numPlayers = input("Enter 1 to play against computer or 2 to play between humans: ")
+            if (not(numPlayers.isdigit())):
+                print("Number of players is not a number")
+            elif int(numPlayers) not in [1,2]:   
+                print("Number of players must be 1 or 2")
+            else:
+                success = 1
+        return numPlayers
+
+    def play():
+        if self.numPlayers == 2:
+            self.playGame()
+
+    def playGame(self):
         gameEnd = 0
         while(not(gameEnd)):
             self.getMove()
@@ -58,9 +92,9 @@ class Board:
 
     def __init__(self, boardSize):
         self.boardSize = boardSize
-        self.initboard()
+        self.initBoard()
 
-    def initboard(self):
+    def initBoard(self):
         self.gameBoard = [['_'] * self.boardSize for x in range(self.boardSize)]
 
     def validateTurn(self,X,Y,turn):
