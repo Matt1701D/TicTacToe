@@ -4,7 +4,7 @@ class TicTacToe:
     def __init__(self):
         self.boardSize = self.gameSetup()
         self.numPlayers = self.gameMode()
-        self.difficulty = 0 if self.numPlayers == 1 else self.gameDifficulty()
+        self.difficulty = 0 if self.numPlayers == 2 else self.gameDifficulty()
         self.board = Board(self.boardSize)
         
         self.turn = "X"
@@ -32,7 +32,7 @@ class TicTacToe:
                 print("Difficulty must be 1,2 or 3")
             else:
                 success = 1
-        return difficulty
+        return int(difficulty)
     
     def gameMode(self):
         success = 0
@@ -44,7 +44,7 @@ class TicTacToe:
                 print("Number of players must be 1 or 2")
             else:
                 success = 1
-        return numPlayers
+        return int(numPlayers)
 
     def play():
         if self.numPlayers == 2:
