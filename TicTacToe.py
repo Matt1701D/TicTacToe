@@ -1,3 +1,4 @@
+import random
 
 class TicTacToe:
 
@@ -46,14 +47,14 @@ class TicTacToe:
                 success = 1
         return int(numPlayers)
 
-    def play():
-        if self.numPlayers == 2:
-            self.playGame()
-
     def playGame(self):
         gameEnd = 0
         while(not(gameEnd)):
-            self.getMove()
+            if self.numPlayers == 2 or self.turn == "X":
+                self.getMoveHuman()
+            else:
+                self.getMoveCPU()
+
             self.board.takeTurn(self.X, self.Y, self.turn)
             self.board.printboard()
 
@@ -64,7 +65,7 @@ class TicTacToe:
             else:
                 self.turn = "X"
 
-    def getMove(self):
+    def getMoveHuman(self):
         success = 0
         while (not(success)):
             userInput = input("Enter coordinates for " + self.turn + ": ")
@@ -87,6 +88,23 @@ class TicTacToe:
                     self.Y = int(Y)
                     success = 1 
 
+    def getMoveCPU(self):
+        if self.difficulty >= 1:
+            move = self.board.makeMoveWin()
+            self.X = move[0]
+            self.Y = move[1]
+        
+        if (move[0] == self.boardSize):
+            success = 0
+            while (not(success)):
+                X = random.randrange(self.boardSize)
+                Y = random.randrange(self.boardSize)
+
+                if (self.board.validateTurn(X,Y,self.turn)):
+                    self.X = X
+                    self.Y = Y
+                    success = 1 
+
 class Board:
     turnsTaken = 0
 
@@ -96,12 +114,14 @@ class Board:
 
     def initBoard(self):
         self.gameBoard = [['_'] * self.boardSize for x in range(self.boardSize)]
+        self.gameBoardTranspose = [['_'] * self.boardSize for x in range(self.boardSize)]
 
     def validateTurn(self,X,Y,turn):
         return self.gameBoard[X][Y] == '_'
 
     def takeTurn(self,X,Y,turn):
         self.gameBoard[X][Y] = turn
+        self.gameBoardTranspose[Y][X] = turn
         self.turnsTaken+=1
 
     def checkGameWinner(self):
@@ -115,13 +135,8 @@ class Board:
                 return 1
 
             #check vertical
-            for j in range(self.boardSize - 1):
-                if sofarV:
-                    sofarV =  (self.gameBoard[j][i] == self.gameBoard[j+1][i]) and (self.gameBoard[j][i] in ['X','O'])
-            if sofarV:
+            if (self.gameBoardTranspose[i] == ['X']*self.boardSize or self.gameBoardTranspose[i] == ['O']*self.boardSize):
                 return 1
-            else:
-                sofarV = 1
 
             #check diagonal right and left
             if sofarR and i != self.boardSize - 1:
@@ -136,6 +151,35 @@ class Board:
         else:
             return 0
 
+    def makeMoveWin(self):
+        X = Y = self.boardSize
+        XCount = OCount = 0
+
+        for i in range(self.boardSize):
+            #check horizontal
+            if (self.gameBoard[i].count('_') == 1 and (self.gameBoard[i].count('O') == self.boardSize - 1 or (self.gameBoard[i].count('X') == self.boardSize - 1))):
+                X = i
+                Y = self.gameBoard[i].index('_')
+
+            #check vertical
+            if (self.gameBoardTranspose[i].count('_') == 1 and (self.gameBoardTranspose[i].count('O') == self.boardSize - 1 or (self.gameBoardTranspose[i].count('X') == self.boardSize - 1))):
+                X = self.gameBoardTranspose[i].index('_')
+                Y = i
+
+            #check diagonal
+            if self.gameBoard[i][i] == 'X':
+                XCount += 1
+            elif self.gameBoard[i][i] == 'O':
+                OCount += 1
+            else:
+                Blank = [i, i]
+
+        if (XCount == self.boardSize - 1) or (OCount == self.boardSize - 1):
+            X = Blank[0]
+            Y = Blank[1]
+
+        return [X,Y]
+
     def checkGameEnd(self, turn):
         if self.turnsTaken == self.boardSize * self.boardSize:
             print("DRAW!")
@@ -149,6 +193,7 @@ class Board:
     def printboard(self):
         for row in self.gameBoard:
             print(' '.join([str(s) for s in row]))
+        print("\n")
 
 myTTT = TicTacToe()
 
