@@ -1,3 +1,5 @@
+import random
+
 class Board:
 
     def __init__(self, boardSize):
@@ -13,9 +15,10 @@ class Board:
         return self.gameBoard[X][Y] == '_'
 
     def takeTurn(self,X,Y,turn):
-        self.gameBoard[X][Y] = turn
-        self.gameBoardTranspose[Y][X] = turn
-        self.__turnsTaken+=1
+        if self.validateTurn(X,Y,turn):
+            self.gameBoard[X][Y] = turn
+            self.gameBoardTranspose[Y][X] = turn
+            self.__turnsTaken+=1
 
     def checkGameWinner(self):
         sofarR = 1
@@ -46,7 +49,8 @@ class Board:
 
     def makeMoveWin(self):
         X = Y = self.boardSize
-        XCount = OCount = BCount = 0
+        XCountR = OCountR = BCountR = 0
+        XCountL = OCountL = BCountL = 0
 
         for i in range(self.boardSize):
             #check horizontal
@@ -59,20 +63,47 @@ class Board:
                 X = self.gameBoardTranspose[i].index('_')
                 Y = i
 
-            #check diagonal
+            #check diagonal right
             if self.gameBoard[i][i] == 'X':
-                XCount += 1
+                XCountR += 1
             elif self.gameBoard[i][i] == 'O':
-                OCount += 1
+                OCountR += 1
             else:
-                Blank = [i, i]
-                BCount += 1
+                BlankR = [i, i]
+                BCountR += 1
 
-        if BCount == 1 and ((XCount == self.boardSize - 1) or (OCount == self.boardSize - 1)):
-            X = Blank[0]
-            Y = Blank[1]
+            #check diagonal left
+            XCoord = self.boardSize - 1 - i
+            if self.gameBoard[XCoord][i] == 'X':
+                XCountL += 1
+            elif self.gameBoard[XCoord][i] == 'O':
+                OCountL += 1
+            else:
+                BlankL = [XCoord, i]
+                BCountL += 1
+
+        if BCountR == 1 and ((XCountR == self.boardSize - 1) or (OCountR == self.boardSize - 1)):
+            X = BlankR[0]
+            Y = BlankR[1]
+        elif BCountL == 1 and ((XCountL == self.boardSize - 1) or (OCountL == self.boardSize - 1)):
+            X = BlankL[0]
+            Y = BlankL[1]
 
         return [X,Y]
+
+    def getMoveCPU(self,difficulty,turn):
+        if difficulty >= 2:
+            move = self.makeMoveWin()
+
+        if difficulty == 1 or move[0] == self.boardSize:
+            X = random.randrange(self.boardSize)
+            Y = random.randrange(self.boardSize)
+            while (not(self.validateTurn(X,Y,turn))):
+                X = random.randrange(self.boardSize)
+                Y = random.randrange(self.boardSize)
+            move = [X,Y]
+
+        return move
 
     def checkGameEnd(self, turn):
         if self.__turnsTaken == self.boardSize * self.boardSize:

@@ -1,4 +1,3 @@
-import random
 import Board
 
 class TicTacToe:
@@ -19,7 +18,7 @@ class TicTacToe:
             if (not(boardSize.isdigit())):
                 print("Board size not a number")
             elif int(boardSize) < 3 or int(boardSize) % 2 == 0:   
-                print("Number less than 3 or not odd")
+                print("Board size less than 3 or not odd")
             else:
                 success = 1
         return int(boardSize)
@@ -31,7 +30,7 @@ class TicTacToe:
             if (not(difficulty.isdigit())):
                 print("Difficulty is not a number")
             elif int(difficulty) not in [1,2,3]:   
-                print("Difficulty must be 1,2 or 3")
+                print("Difficulty must be 1, 2 or 3")
             else:
                 success = 1
         return int(difficulty)
@@ -90,22 +89,10 @@ class TicTacToe:
                     success = 1 
 
     def getMoveCPU(self):
-        if self.difficulty >= 1:
-            move = self.board.makeMoveWin()
-            self.X = move[0]
-            self.Y = move[1]
-        
-        if (move[0] == self.boardSize):
-            success = 0
-            while (not(success)):
-                X = random.randrange(self.boardSize)
-                Y = random.randrange(self.boardSize)
+        move = self.board.getMoveCPU(self.difficulty,self.turn)
+        self.X = move[0]
+        self.Y = move[1]
 
-                if (self.board.validateTurn(X,Y,self.turn)):
-                    self.X = X
-                    self.Y = Y
-                    success = 1 
-
-
-myTTT = TicTacToe()
+if __name__ == '__main__':
+    myTTT = TicTacToe()
 
