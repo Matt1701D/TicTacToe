@@ -3,6 +3,7 @@ import Board
 class TicTacToe:
 
     def __init__(self):
+        #initialize game parameters through user input
         self.boardSize = self.gameSetup()
         self.numPlayers = self.gameMode()
         self.difficulty = 0 if self.numPlayers == 2 else self.gameDifficulty()
@@ -48,6 +49,7 @@ class TicTacToe:
         return int(numPlayers)
 
     def playGame(self):
+        #get next move from user or generate for cpu until game has ended
         gameEnd = 0
         while(not(gameEnd)):
             if self.numPlayers == 2 or self.turn == "X":

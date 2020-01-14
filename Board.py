@@ -8,6 +8,7 @@ class Board:
         self.initBoard()
 
     def initBoard(self):
+        #make transposed board to more quickly check for vertical moves and win
         self.gameBoard = [['_'] * self.boardSize for x in range(self.boardSize)]
         self.gameBoardTranspose = [['_'] * self.boardSize for x in range(self.boardSize)]
 
@@ -15,6 +16,7 @@ class Board:
         return self.gameBoard[X][Y] == '_'
 
     def takeTurn(self,X,Y,turn):
+        #store turn in board and transposed board
         if self.validateTurn(X,Y,turn):
             self.gameBoard[X][Y] = turn
             self.gameBoardTranspose[Y][X] = turn
@@ -48,6 +50,7 @@ class Board:
             return 0
 
     def makeMoveWin(self):
+        #always have cpu pick coord to win or block a win
         X = Y = self.boardSize
         XCountR = OCountR = BCountR = 0
         XCountL = OCountL = BCountL = 0
@@ -92,6 +95,7 @@ class Board:
         return [X,Y]
 
     def getMoveCPU(self,difficulty,turn):
+        #if cpu difficulty is 2 or greater always pick a winning or blocking move, else just random move
         if difficulty >= 2:
             move = self.makeMoveWin()
 
